@@ -256,7 +256,7 @@ function kickoffTimestamp(isoDate, timeStr) {
 // Resolve a knockout placeholder like "2A" (runner-up Group A) or "W74"
 // (winner of match #74) into a real team name, once that's knowable.
 // Returns null if not yet determined (game not played / group not final).
-function resolvePlaceholder(code, standingsByGroup, resultsByMatchNum) {
+function resolvePlaceholder(code, standingsByGroup, resultsByMatchNum, bestThirds) {
   if (!code) return null;
   const winnerOf = code.match(/^W(\d+)$/);
   const loserOf = code.match(/^L(\d+)$/);
@@ -275,25 +275,53 @@ function resolvePlaceholder(code, standingsByGroup, resultsByMatchNum) {
     if (!table) return null;
     return table[Number(groupPos[1]) - 1] || null;
   }
-  // "3A/B/C/D/F" (best third-placed team among these groups) is not
-  // resolvable without full standings math — leave as TBD for now.
+  // "3A/B/C/D/F" = best third-placed team among these specific groups.
+  // Each of the 8 qualified third-place teams fills exactly one Round of 32
+  // slot — the actual FIFA assignment uses a fixed lookup table keyed to
+  // which 4 groups produced the bottom 4 (since each combination of
+  // qualifying/non-qualifying groups maps to one specific bracket shape).
+  // We approximate that by assigning qualified teams to slots in rank
+  // order, removing each team from the pool once placed, which gives the
+  // correct team-to-slot mapping in the common case but isn't guaranteed
+  // identical to FIFA's published table for every one of the 495 possible
+  // combinations. Treat resolved 3rd-place opponents as "best available
+  // info," not an official guarantee, until the real bracket reaches that
+  // stage and can be cross-checked.
+  const thirdSlot = code.match(/^3([A-L](?:\/[A-L])*)$/);
+  if (thirdSlot && bestThirds) {
+    const eligibleGroups = thirdSlot[1].split("/");
+    const match = bestThirds.usedGroups
+      ? bestThirds.find((t) => eligibleGroups.includes(t.group) && !bestThirds.usedGroups.has(t.group))
+      : bestThirds.find((t) => eligibleGroups.includes(t.group));
+    if (match && bestThirds.usedGroups) bestThirds.usedGroups.add(match.group);
+    return match ? match.name : null;
+  }
   return null;
 }
 
-// Build simple group standings (just enough to resolve 1st/2nd place) from
-// played group matches. Tiebreaks are approximate (points, then goal diff,
-// then goals scored) — good enough for "who topped the group", not official.
+// Build group standings, exposing both the ordered name list (for 1st/2nd
+// place lookups) and each team's raw stats (for cross-group 3rd-place
+// comparison). Tiebreak order matches FIFA's published rules as closely as
+// the available data allows: points, goal difference, goals scored. Card
+// data and FIFA rankings (the official next two tiebreaker steps) aren't in
+// this data source, so a tie surviving all three stays unresolved rather
+// than being guessed.
 function buildStandings(liveMatches) {
   const tables = {};
+  const gamesPlayed = {};
   liveMatches.forEach((m) => {
-    if (!isGroupRound(m.round) || !m.score) return;
+    if (!isGroupRound(m.round)) return;
     const g = (m.group || "").replace("Group ", "");
-    if (!tables[g]) tables[g] = {};
+    gamesPlayed[g] = gamesPlayed[g] || {};
     const a = normalizeTeam(m.team1);
     const b = normalizeTeam(m.team2);
+    gamesPlayed[g][a] = (gamesPlayed[g][a] || 0) + (m.score ? 1 : 0);
+    gamesPlayed[g][b] = (gamesPlayed[g][b] || 0) + (m.score ? 1 : 0);
+    if (!m.score) return;
+    if (!tables[g]) tables[g] = {};
     const [sa, sb] = m.score.ft;
-    tables[g][a] = tables[g][a] || { name: a, pts: 0, gf: 0, ga: 0 };
-    tables[g][b] = tables[g][b] || { name: b, pts: 0, gf: 0, ga: 0 };
+    tables[g][a] = tables[g][a] || { name: a, group: g, pts: 0, gf: 0, ga: 0 };
+    tables[g][b] = tables[g][b] || { name: b, group: g, pts: 0, gf: 0, ga: 0 };
     tables[g][a].gf += sa; tables[g][a].ga += sb;
     tables[g][b].gf += sb; tables[g][b].ga += sa;
     if (sa > sb) tables[g][a].pts += 3;
@@ -301,13 +329,39 @@ function buildStandings(liveMatches) {
     else { tables[g][a].pts += 1; tables[g][b].pts += 1; }
   });
   const standingsByGroup = {};
+  const thirdPlaceStats = []; // one entry per group whose 3 games are all played
   Object.keys(tables).forEach((g) => {
     const arr = Object.values(tables[g]).sort(
       (x, y) => y.pts - x.pts || (y.gf - y.ga) - (x.gf - x.ga) || y.gf - x.gf
     );
     standingsByGroup[g] = arr.map((t) => t.name);
+    const groupComplete = Object.values(gamesPlayed[g] || {}).every((n) => n === 3) && arr.length === 4;
+    if (groupComplete) {
+      thirdPlaceStats.push(arr[2]); // 0-indexed: 3rd place
+    }
   });
-  return standingsByGroup;
+  return { standingsByGroup, thirdPlaceStats };
+}
+
+// Rank all finalized third-place teams across groups and return the top 8,
+// using points -> goal difference -> goals scored. If the team in 8th place
+// is tied with the team in 9th on all three (a genuine tie our data can't
+// break — see note above), we don't guess which one advances: both are
+// left out of the resolved list, so any slot depending on them stays TBD.
+function buildBestThirdPlace(thirdPlaceStats, totalGroups) {
+  if (thirdPlaceStats.length < totalGroups) return []; // wait for every group to finish
+  const ranked = [...thirdPlaceStats].sort(
+    (x, y) => y.pts - x.pts || (y.gf - y.ga) - (x.gf - x.ga) || y.gf - x.gf
+  );
+  const cmp = (a, b) => a.pts === b.pts && (a.gf - a.ga) === (b.gf - b.ga) && a.gf === b.gf;
+  if (ranked.length > 8 && cmp(ranked[7], ranked[8])) {
+    // Tie straddling the cutline — can't safely say who's in. Resolve
+    // everyone clearly above the tie, leave the rest unresolved.
+    let cut = 7;
+    while (cut > 0 && cmp(ranked[cut - 1], ranked[cut])) cut--;
+    return ranked.slice(0, cut);
+  }
+  return ranked.slice(0, 8);
 }
 
 // Transform the raw openfootball JSON into this app's SCHEDULE shape
@@ -328,45 +382,56 @@ function transformLiveData(raw) {
         : { winner: b, loser: a };
     }
   });
-  const standingsByGroup = buildStandings(matches);
+  const { standingsByGroup, thirdPlaceStats } = buildStandings(matches);
+  const totalGroups = new Set(matches.filter((m) => isGroupRound(m.round)).map((m) => m.group)).size;
+  const bestThirds = buildBestThirdPlace(thirdPlaceStats, totalGroups);
+  bestThirds.usedGroups = new Set(); // tracks which qualified 3rd-place team has been placed
   const today = startOfToday();
 
   const groupGames = [];
   const knockoutGames = [];
 
+  // Knockout matches must be resolved in match-number order (the order
+  // they're actually drawn/seeded in), not the arbitrary order they appear
+  // in the source file, so the same input always produces the same
+  // team-to-slot assignment.
+  const knockoutSource = matches
+    .filter((m) => !isGroupRound(m.round))
+    .sort((a, b) => (a.num || 0) - (b.num || 0));
+
   matches.forEach((m, i) => {
-    if (isGroupRound(m.round)) {
-      const teamA = normalizeTeam(m.team1);
-      const teamB = normalizeTeam(m.team2);
-      const date = formatLiveDate(m.date);
-      const dayValue = dayValueFromISO(m.date);
-      groupGames.push({
-        id: `live-${i}`,
-        group: (m.group || "").replace("Group ", ""),
-        teamA,
-        teamB,
-        date,
-        dayValue,
-        time: formatLiveTime(m.time),
-        sortKey: kickoffTimestamp(m.date, m.time),
-        played: dayValue < today,
-        score: m.score ? m.score.ft : null,
-      });
-    } else {
-      // Knockout: try to resolve placeholders into real team names.
-      const teamA = resolvePlaceholder(m.team1, standingsByGroup, resultsByMatchNum) || m.team1;
-      const teamB = resolvePlaceholder(m.team2, standingsByGroup, resultsByMatchNum) || m.team2;
-      knockoutGames.push({
-        round: m.round,
-        num: m.num,
-        teamA,
-        teamB,
-        date: formatLiveDate(m.date),
-        time: formatLiveTime(m.time),
-        score: m.score ? m.score.ft : null,
-        ground: m.ground,
-      });
-    }
+    if (!isGroupRound(m.round)) return;
+    const teamA = normalizeTeam(m.team1);
+    const teamB = normalizeTeam(m.team2);
+    const date = formatLiveDate(m.date);
+    const dayValue = dayValueFromISO(m.date);
+    groupGames.push({
+      id: `live-${i}`,
+      group: (m.group || "").replace("Group ", ""),
+      teamA,
+      teamB,
+      date,
+      dayValue,
+      time: formatLiveTime(m.time),
+      sortKey: kickoffTimestamp(m.date, m.time),
+      played: dayValue < today,
+      score: m.score ? m.score.ft : null,
+    });
+  });
+
+  knockoutSource.forEach((m) => {
+    const teamA = resolvePlaceholder(m.team1, standingsByGroup, resultsByMatchNum, bestThirds) || m.team1;
+    const teamB = resolvePlaceholder(m.team2, standingsByGroup, resultsByMatchNum, bestThirds) || m.team2;
+    knockoutGames.push({
+      round: m.round,
+      num: m.num,
+      teamA,
+      teamB,
+      date: formatLiveDate(m.date),
+      time: formatLiveTime(m.time),
+      score: m.score ? m.score.ft : null,
+      ground: m.ground,
+    });
   });
 
   groupGames.sort((a, b) => a.sortKey - b.sortKey);
