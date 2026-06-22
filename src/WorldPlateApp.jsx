@@ -231,6 +231,20 @@ function dayValueFromISO(isoDate) {
   const [y, m, d] = isoDate.split("-").map(Number);
   return new Date(y, m - 1, d).setHours(0, 0, 0, 0);
 }
+// Matches are played across US/Mexico/Canada time zones, so "date" + local
+// "time" alone isn't enough to sort correctly — a game at 11pm UTC-7 happens
+// before one at 1pm UTC-4 the same calendar day. Combine date, local time,
+// and the UTC offset into one true absolute instant for sorting.
+function kickoffTimestamp(isoDate, timeStr) {
+  const [y, mo, d] = isoDate.split("-").map(Number);
+  const [time, offsetStr] = timeStr.split(" "); // "19:00", "UTC-6"
+  const [h, min] = time.split(":").map(Number);
+  const offsetMatch = (offsetStr || "").match(/UTC([+-]\d+)/);
+  const offsetHours = offsetMatch ? Number(offsetMatch[1]) : 0;
+  // Date.UTC gives the instant for h:min UTC; subtracting the offset
+  // converts "h:min in UTC-6" into the correct UTC instant.
+  return Date.UTC(y, mo - 1, d, h - offsetHours, min);
+}
 
 // Resolve a knockout placeholder like "2A" (runner-up Group A) or "W74"
 // (winner of match #74) into a real team name, once that's knowable.
@@ -327,7 +341,7 @@ function transformLiveData(raw) {
         date,
         dayValue,
         time: formatLiveTime(m.time),
-        sortKey: dayValue,
+        sortKey: kickoffTimestamp(m.date, m.time),
         played: dayValue < today,
         score: m.score ? m.score.ft : null,
       });
