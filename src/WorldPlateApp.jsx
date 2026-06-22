@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Neutral dark UI — color lives ONLY on flags
 const C = {
@@ -183,6 +183,188 @@ function buildSchedule() {
 
 const SCHEDULE = buildSchedule();
 
+// ─────────────────────────────────────────────────────────────────────────
+// LIVE DATA — pulls real World Cup 2026 fixtures/results from openfootball
+// (free, public-domain, no key). If the fetch fails for any reason, the app
+// silently keeps using the generated SCHEDULE above, so it's never broken.
+// ─────────────────────────────────────────────────────────────────────────
+
+const LIVE_DATA_URL =
+  "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json";
+
+// openfootball spells a few teams differently than this app does.
+// Maps openfootball's name -> this app's name.
+const NAME_MAP = {
+  "Czech Republic": "Czechia",
+  "Bosnia & Herzegovina": "Bosnia and Herzegovina",
+  "USA": "United States",
+  "Turkey": "Turkiye",
+  "Curaçao": "Curacao",
+};
+function normalizeTeam(name) {
+  return NAME_MAP[name] || name;
+}
+
+// Group-stage "round" strings from openfootball look like "Matchday 14".
+// We only need to know it's a group game (it carries its own "group" field).
+function isGroupRound(round) {
+  return /^Matchday/i.test(round || "");
+}
+
+// Format openfootball's "2026-06-24" + "19:00 UTC-6" into this app's
+// "6/24" date string and a friendly time label.
+function formatLiveDate(isoDate) {
+  const parts = isoDate.split("-");
+  return `${Number(parts[1])}/${Number(parts[2])}`;
+}
+function formatLiveTime(timeStr) {
+  // e.g. "19:00 UTC-6" -> "7:00pm" (kept simple; offset shown separately if needed)
+  const [time] = timeStr.split(" ");
+  const [hStr, min] = time.split(":");
+  let h = Number(hStr);
+  const ampm = h >= 12 ? "pm" : "am";
+  h = h % 12;
+  if (h === 0) h = 12;
+  return `${h}:${min}${ampm}`;
+}
+function dayValueFromISO(isoDate) {
+  const [y, m, d] = isoDate.split("-").map(Number);
+  return new Date(y, m - 1, d).setHours(0, 0, 0, 0);
+}
+
+// Resolve a knockout placeholder like "2A" (runner-up Group A) or "W74"
+// (winner of match #74) into a real team name, once that's knowable.
+// Returns null if not yet determined (game not played / group not final).
+function resolvePlaceholder(code, standingsByGroup, resultsByMatchNum) {
+  if (!code) return null;
+  const winnerOf = code.match(/^W(\d+)$/);
+  const loserOf = code.match(/^L(\d+)$/);
+  if (winnerOf) {
+    const r = resultsByMatchNum[winnerOf[1]];
+    return r ? r.winner : null;
+  }
+  if (loserOf) {
+    const r = resultsByMatchNum[loserOf[1]];
+    return r ? r.loser : null;
+  }
+  // "2A" = runner-up of Group A, "1A" = winner of Group A
+  const groupPos = code.match(/^([12])([A-L])$/);
+  if (groupPos) {
+    const table = standingsByGroup[groupPos[2]];
+    if (!table) return null;
+    return table[Number(groupPos[1]) - 1] || null;
+  }
+  // "3A/B/C/D/F" (best third-placed team among these groups) is not
+  // resolvable without full standings math — leave as TBD for now.
+  return null;
+}
+
+// Build simple group standings (just enough to resolve 1st/2nd place) from
+// played group matches. Tiebreaks are approximate (points, then goal diff,
+// then goals scored) — good enough for "who topped the group", not official.
+function buildStandings(liveMatches) {
+  const tables = {};
+  liveMatches.forEach((m) => {
+    if (!isGroupRound(m.round) || !m.score) return;
+    const g = (m.group || "").replace("Group ", "");
+    if (!tables[g]) tables[g] = {};
+    const a = normalizeTeam(m.team1);
+    const b = normalizeTeam(m.team2);
+    const [sa, sb] = m.score.ft;
+    tables[g][a] = tables[g][a] || { name: a, pts: 0, gf: 0, ga: 0 };
+    tables[g][b] = tables[g][b] || { name: b, pts: 0, gf: 0, ga: 0 };
+    tables[g][a].gf += sa; tables[g][a].ga += sb;
+    tables[g][b].gf += sb; tables[g][b].ga += sa;
+    if (sa > sb) tables[g][a].pts += 3;
+    else if (sb > sa) tables[g][b].pts += 3;
+    else { tables[g][a].pts += 1; tables[g][b].pts += 1; }
+  });
+  const standingsByGroup = {};
+  Object.keys(tables).forEach((g) => {
+    const arr = Object.values(tables[g]).sort(
+      (x, y) => y.pts - x.pts || (y.gf - y.ga) - (x.gf - x.ga) || y.gf - x.gf
+    );
+    standingsByGroup[g] = arr.map((t) => t.name);
+  });
+  return standingsByGroup;
+}
+
+// Transform the raw openfootball JSON into this app's SCHEDULE shape
+// (group stage) and a parallel knockout list with placeholders resolved
+// as far as current results allow.
+function transformLiveData(raw) {
+  const matches = raw.matches || [];
+  const resultsByMatchNum = {};
+  matches.forEach((m) => {
+    if (m.num && m.score) {
+      const [sa, sb] = m.score.ft;
+      const a = normalizeTeam(m.team1);
+      const b = normalizeTeam(m.team2);
+      resultsByMatchNum[m.num] = sa === sb
+        ? { winner: null, loser: null } // shouldn't happen in knockout
+        : sa > sb
+        ? { winner: a, loser: b }
+        : { winner: b, loser: a };
+    }
+  });
+  const standingsByGroup = buildStandings(matches);
+  const today = startOfToday();
+
+  const groupGames = [];
+  const knockoutGames = [];
+
+  matches.forEach((m, i) => {
+    if (isGroupRound(m.round)) {
+      const teamA = normalizeTeam(m.team1);
+      const teamB = normalizeTeam(m.team2);
+      const date = formatLiveDate(m.date);
+      const dayValue = dayValueFromISO(m.date);
+      groupGames.push({
+        id: `live-${i}`,
+        group: (m.group || "").replace("Group ", ""),
+        teamA,
+        teamB,
+        date,
+        dayValue,
+        time: formatLiveTime(m.time),
+        sortKey: dayValue,
+        played: dayValue < today,
+        score: m.score ? m.score.ft : null,
+      });
+    } else {
+      // Knockout: try to resolve placeholders into real team names.
+      const teamA = resolvePlaceholder(m.team1, standingsByGroup, resultsByMatchNum) || m.team1;
+      const teamB = resolvePlaceholder(m.team2, standingsByGroup, resultsByMatchNum) || m.team2;
+      knockoutGames.push({
+        round: m.round,
+        num: m.num,
+        teamA,
+        teamB,
+        date: formatLiveDate(m.date),
+        time: formatLiveTime(m.time),
+        score: m.score ? m.score.ft : null,
+        ground: m.ground,
+      });
+    }
+  });
+
+  groupGames.sort((a, b) => a.sortKey - b.sortKey);
+  return { groupGames, knockoutGames };
+}
+
+// Fetch the live data once. Returns null on any failure so callers can
+// fall back to the static generated SCHEDULE without the app breaking.
+async function fetchLiveSchedule() {
+  try {
+    const res = await fetch(LIVE_DATA_URL);
+    if (!res.ok) return null;
+    const raw = await res.json();
+    return transformLiveData(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
 // Weekday name from a stored timestamp.
 function weekdayFromValue(ts) {
   return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date(ts).getDay()];
@@ -202,11 +384,12 @@ function groupStageOver() {
 }
 
 // Group the schedule by date for date-header rendering, preserving order.
-function scheduleByDate() {
+function scheduleByDate(games) {
+  const list = games && games.length ? games : SCHEDULE;
   const byDate = [];
   const seen = {};
   const today = startOfToday();
-  SCHEDULE.forEach((g) => {
+  list.forEach((g) => {
     if (!seen[g.date]) {
       seen[g.date] = {
         date: g.date,
@@ -1548,8 +1731,8 @@ function DayCard({ day, onSelect }) {
   );
 }
 
-function ScheduleView({ onSelect }) {
-  const days = scheduleByDate();
+function ScheduleView({ onSelect, liveGames }) {
+  const days = scheduleByDate(liveGames);
   const pastDays = days.filter((d) => d.past);
   const upcomingDays = days.filter((d) => !d.past);
 
@@ -1625,9 +1808,18 @@ function ScheduleView({ onSelect }) {
   );
 }
 
+// True if `team` is a real, resolved team name rather than a bracket
+// placeholder code (e.g. "2A", "W74", "3A/B/C/D/F", "TBD").
+function isPlaceholderCode(team) {
+  if (!team || team === "TBD") return true;
+  if (SLOT_LABELS[team]) return true;
+  // openfootball-style codes: "1A", "2A", "W74", "L101", "3A/B/C/D/F"
+  return /^([12][A-L]\d?|[WL]\d+|3[A-L](\/[A-L])+)$/.test(team);
+}
+
 function BracketSlot({ team }) {
-  const isReal = team !== "TBD" && !SLOT_LABELS[team];
-  const label = SLOT_LABELS[team] || team;
+  const isReal = !isPlaceholderCode(team);
+  const label = SLOT_LABELS[team] || (isReal ? team : "TBD");
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0 }}>
       {isReal && <FlagChip team={team} size={16} />}
@@ -1640,9 +1832,7 @@ function BracketSlot({ team }) {
 
 function BracketNode({ match, onSelect }) {
   // Only tappable once both sides are real teams with a menu
-  const bothReal =
-    match.teamA !== "TBD" && !SLOT_LABELS[match.teamA] &&
-    match.teamB !== "TBD" && !SLOT_LABELS[match.teamB];
+  const bothReal = !isPlaceholderCode(match.teamA) && !isPlaceholderCode(match.teamB);
   return (
     <button
       onClick={() => bothReal && onSelect(match)}
@@ -1667,19 +1857,40 @@ function BracketNode({ match, onSelect }) {
   );
 }
 
-function BracketView({ onSelect }) {
+// Groups live knockout matches by round, in the real bracket order.
+const KNOCKOUT_ROUND_ORDER = [
+  "Round of 32",
+  "Round of 16",
+  "Quarter-final",
+  "Semi-final",
+  "Match for third place",
+  "Final",
+];
+function liveKnockoutByRound(liveKnockout) {
+  const byRound = {};
+  liveKnockout.forEach((m) => {
+    if (!byRound[m.round]) byRound[m.round] = [];
+    byRound[m.round].push(m);
+  });
+  return KNOCKOUT_ROUND_ORDER
+    .filter((r) => byRound[r])
+    .map((r) => ({ name: r, matches: byRound[r].sort((a, b) => a.num - b.num) }));
+}
+
+function BracketView({ onSelect, liveKnockout }) {
+  const courses = liveKnockout && liveKnockout.length ? liveKnockoutByRound(liveKnockout) : COURSES;
   return (
     <div>
       <p style={{ fontSize: "12px", color: C.mutedDark, marginBottom: "14px", lineHeight: 1.5 }}>
         Scroll horizontally to follow the knockout path. TBD slots lock in as group results finalize.
       </p>
       <div className="bracket-scroll" style={{ display: "flex", gap: "26px", overflowX: "auto", paddingBottom: "10px" }}>
-        {COURSES.map((round) => (
+        {courses.map((round) => (
           <div key={round.name} style={{ display: "flex", flexDirection: "column", gap: "16px", flexShrink: 0 }}>
             <p style={{ fontSize: "11px", fontWeight: 700, color: C.muted, letterSpacing: "0", margin: 0 }}>{round.name}</p>
             <div style={{ display: "flex", flexDirection: "column", gap: "20px", justifyContent: "space-around", flex: 1 }}>
-              {round.matches.map((m) => (
-                <BracketNode key={m.id} match={m} onSelect={onSelect} />
+              {round.matches.map((m, i) => (
+                <BracketNode key={m.id || `${round.name}-${i}`} match={m} onSelect={onSelect} />
               ))}
             </div>
           </div>
@@ -1692,6 +1903,13 @@ function BracketView({ onSelect }) {
 export default function WorldPlateApp() {
   const [matchView, setMatchView] = useState(groupStageOver() ? "bracket" : "groups"); // groups | bracket
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [liveData, setLiveData] = useState(null); // null until a successful fetch resolves
+
+  useEffect(() => {
+    fetchLiveSchedule().then((data) => {
+      if (data) setLiveData(data);
+    });
+  }, []);
 
   if (selectedMatch) {
     return (
@@ -1764,7 +1982,7 @@ export default function WorldPlateApp() {
       </div>
 
       <div style={{ maxWidth: "960px", margin: "0 auto", padding: "18px 16px 36px 16px" }}>
-        {matchView === "groups" ? <ScheduleView onSelect={setSelectedMatch} /> : <BracketView onSelect={setSelectedMatch} />}
+        {matchView === "groups" ? <ScheduleView onSelect={setSelectedMatch} liveGames={liveData?.groupGames} /> : <BracketView onSelect={setSelectedMatch} liveKnockout={liveData?.knockoutGames} />}
       </div>
     </div>
   );
