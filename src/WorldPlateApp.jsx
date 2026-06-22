@@ -217,15 +217,22 @@ function formatLiveDate(isoDate) {
   const parts = isoDate.split("-");
   return `${Number(parts[1])}/${Number(parts[2])}`;
 }
+// Converts a venue's local kickoff (e.g. "19:00 UTC-6") into a single
+// consistent zone — US Eastern Time (UTC-4 in June/July, daylight saving) —
+// so every displayed time is directly comparable, the way US sports
+// broadcasts conventionally list "ET" kickoff times regardless of venue.
+const EASTERN_OFFSET = -4; // EDT, in effect during the June/July tournament window
 function formatLiveTime(timeStr) {
-  // e.g. "19:00 UTC-6" -> "7:00pm" (kept simple; offset shown separately if needed)
-  const [time] = timeStr.split(" ");
+  const [time, offsetStr] = timeStr.split(" ");
   const [hStr, min] = time.split(":");
-  let h = Number(hStr);
+  const offsetMatch = (offsetStr || "").match(/UTC([+-]\d+)/);
+  const venueOffset = offsetMatch ? Number(offsetMatch[1]) : EASTERN_OFFSET;
+  // Shift from the venue's local hour to Eastern by the difference in offsets.
+  let h = (Number(hStr) + (EASTERN_OFFSET - venueOffset) + 24) % 24;
   const ampm = h >= 12 ? "pm" : "am";
-  h = h % 12;
-  if (h === 0) h = 12;
-  return `${h}:${min}${ampm}`;
+  let h12 = h % 12;
+  if (h12 === 0) h12 = 12;
+  return `${h12}:${min}${ampm} ET`;
 }
 function dayValueFromISO(isoDate) {
   const [y, m, d] = isoDate.split("-").map(Number);
