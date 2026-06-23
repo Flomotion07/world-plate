@@ -3491,10 +3491,10 @@ export default function WorldPlateApp() {
           </div>
 
           <h2 style={{ fontSize: "20px", fontWeight: 700, color: C.white, margin: "0 0 8px 0", lineHeight: 1.15, letterSpacing: "-0.01em" }}>
-            Every Match Is a Meal
+            Make Every Match a Meal
           </h2>
           <p style={{ fontSize: "15px", color: C.muted, lineHeight: 1.55, margin: "0 0 20px 0" }}>
-            Pick any matchup for a watch-party menu that fuses both teams' kitchens.
+            Pick a matchup, get a watch-party menu blending both teams' cuisines.
           </p>
 
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "16px" }}>

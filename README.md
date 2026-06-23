@@ -1,6 +1,6 @@
 # World Plate
 
-Every match is a meal. Fusion watch-party menus for every World Cup 2026 matchup.
+Make every match a meal. Fusion watch-party menus for every World Cup 2026 matchup.
 
 This is a self-contained website. It runs entirely in the browser — no server, no database, no accounts. Visitors just browse matchups (including upcoming ones) and the menu for each.
 
