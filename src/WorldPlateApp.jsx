@@ -258,6 +258,11 @@ function kickoffTimestamp(isoDate, timeStr) {
 // Returns null if not yet determined (game not played / group not final).
 function resolvePlaceholder(code, standingsByGroup, resultsByMatchNum, bestThirds) {
   if (!code) return null;
+  // If this isn't actually a placeholder code, it's already a real team name
+  // straight from the source (e.g. "USA") — just normalize it to this app's
+  // naming so it matches the flag table and PAIRING_CONTENT keys.
+  const isPlaceholderCode = /^([12][A-L]|[WL]\d+|3[A-L](\/[A-L])*)$/.test(code);
+  if (!isPlaceholderCode) return normalizeTeam(code);
   const winnerOf = code.match(/^W(\d+)$/);
   const loserOf = code.match(/^L(\d+)$/);
   if (winnerOf) {
@@ -420,8 +425,8 @@ function transformLiveData(raw) {
   });
 
   knockoutSource.forEach((m) => {
-    const teamA = resolvePlaceholder(m.team1, standingsByGroup, resultsByMatchNum, bestThirds) || m.team1;
-    const teamB = resolvePlaceholder(m.team2, standingsByGroup, resultsByMatchNum, bestThirds) || m.team2;
+    const teamA = resolvePlaceholder(m.team1, standingsByGroup, resultsByMatchNum, bestThirds) || normalizeTeam(m.team1);
+    const teamB = resolvePlaceholder(m.team2, standingsByGroup, resultsByMatchNum, bestThirds) || normalizeTeam(m.team2);
     knockoutGames.push({
       round: m.round,
       num: m.num,
@@ -3909,9 +3914,14 @@ function BracketNode({ match, onSelect }) {
       <div style={{ marginBottom: "8px" }}>
         <BracketSlot team={match.teamA} />
       </div>
-      <div>
+      <div style={{ marginBottom: (match.date || match.time) ? "8px" : 0 }}>
         <BracketSlot team={match.teamB} />
       </div>
+      {(match.date || match.time) && (
+        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: "6px", fontSize: "11px", color: C.mutedDark }}>
+          {match.date}{match.date && match.time ? " · " : ""}{match.time}
+        </div>
+      )}
     </button>
   );
 }
