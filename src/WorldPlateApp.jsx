@@ -3052,68 +3052,6 @@ const PAIRING_CONTENT = {
       ],
     },
   },
-
-
-  "Germany|Sweden": {
-    menu: {
-      bites: [
-        { name: "Köttbullar Currywurst", description: "German currywurst sausage served alongside Swedish meatballs in a shared curry-cream sauce.",
-          serves: "Serves 4", time: "35 min",
-          ingredients: ["4 bratwurst", "1 lb meatballs", "1 cup cream", "1 tbsp curry powder", "Lingonberry jam"],
-          steps: ["Grill the bratwurst, slice.", "Brown the meatballs.", "Simmer both in curry cream sauce.", "Serve with a dab of lingonberry jam."] },
-        { name: "Gravlax Pretzel Bites", description: "German pretzel bites topped with Swedish cured gravlax and dill.",
-          serves: "Serves 4", time: "30 min",
-          ingredients: ["Pretzel dough, shaped into bites", "6 oz gravlax", "Dill", "Mustard sauce"],
-          steps: ["Boil and bake the pretzel bites until deep brown.", "Top each with a sliver of gravlax.", "Scatter dill.", "Serve with mustard sauce."] },
-        { name: "Cardamom Apple Streusel", description: "German apple streusel cake scented with Swedish cardamom.",
-          serves: "Serves 6", time: "40 min",
-          ingredients: ["3 apples, sliced", "1 cup flour", "1/2 cup butter", "1/2 tsp cardamom", "Sugar"],
-          steps: ["Layer sliced apples in a baking dish.", "Mix flour, butter, cardamom, sugar into streusel.", "Scatter over the apples.", "Bake 30 min until golden."] },
-      ],
-      drink: { name: "Elderflower Apfelschorle", description: "German apple spritz brightened with Swedish elderflower.",
-        serves: "Serves 4", time: "5 min",
-        ingredients: ["2 cups apple juice", "Elderflower cordial", "Soda water", "Ice"],
-        steps: ["Mix apple juice with elderflower cordial.", "Top with soda over ice.", "Stir and serve."] },
-    },
-    common: {
-      intro: "Germany and Sweden both treat cured fish, cardamom-laced baking, and a well-made sausage as everyday comfort, with a shared love of clean, hearty flavor.",
-      connections: [
-        { title: "Meatballs and sausage", description: "German wurst and Swedish köttbullar both turn well-seasoned ground meat into a national comfort food." },
-        { title: "Curing and preserving", description: "German smoked meats and Swedish gravlax both reflect deep skill in curing to make food last and taste better." },
-        { title: "Warm spice in baking", description: "Cardamom and cinnamon show up generously in both German and Swedish baking traditions." },
-      ],
-    },
-  },
-  "France|Paraguay": {
-    menu: {
-      bites: [
-        { name: "Chipa Croque", description: "French croque monsieur made with Paraguay's chipa cassava-cheese bread instead of regular bread.",
-          serves: "Serves 4", time: "30 min",
-          ingredients: ["Chipa rolls (cassava cheese bread)", "4 oz ham", "Gruyere", "Butter"],
-          steps: ["Split the chipa rolls.", "Layer ham and cheese inside.", "Toast in butter until the cheese melts.", "Serve warm."] },
-        { name: "Sopa Paraguaya Tartines", description: "French open tartines topped with Paraguay's savory sopa paraguaya cornbread.",
-          serves: "Serves 4", time: "40 min",
-          ingredients: ["4 bread slices", "2 cups cornmeal", "1 cup cottage cheese", "Onion", "Corn"],
-          steps: ["Bake the sopa paraguaya cornbread.", "Toast the bread slices.", "Top with warm slices of the cornbread.", "Serve open-faced."] },
-        { name: "Dulce de Leche Madeleines", description: "French madeleine cakes filled with Paraguay's dulce de leche.",
-          serves: "Serves 6", time: "30 min",
-          ingredients: ["1 cup flour", "2 eggs", "1/2 cup butter", "1/2 cup dulce de leche", "Sugar"],
-          steps: ["Whisk eggs and sugar.", "Fold in flour and melted butter.", "Bake into madeleines.", "Fill or drizzle with dulce de leche."] },
-      ],
-      drink: { name: "Terere Citron Pressé", description: "Paraguay's cold terere yerba mate with a French citron pressé brightness.",
-        serves: "Serves 4", time: "10 min",
-        ingredients: ["3 cups cold yerba mate", "Lemon juice", "Sugar syrup", "Ice", "Mint"],
-        steps: ["Mix cold mate with lemon juice and syrup.", "Add mint.", "Serve over ice."] },
-    },
-    common: {
-      intro: "France and Paraguay both build their tables on well-made bread and cheese, with a quiet pride in technique that runs through baking in both cultures.",
-      connections: [
-        { title: "Cheese baked into the bread", description: "Paraguayan chipa bakes cheese right into the dough, a trick French baking embraces in its own way too." },
-        { title: "Corn and grain craft", description: "Sopa paraguaya and French savory baking both turn humble grain into something worth making carefully." },
-        { title: "A shared sweet pause", description: "French patisserie and Paraguay's dulce de leche treats both treat dessert as a small, deliberate pleasure." },
-      ],
-    },
-  },
   "Mexico|Ecuador": {
     menu: {
       bites: [
@@ -3204,36 +3142,6 @@ const PAIRING_CONTENT = {
       ],
     },
   },
-  "Belgium|Algeria": {
-    menu: {
-      bites: [
-        { name: "Harissa Frites", description: "Belgian double-fried fries with a swipe of Algerian harissa mayo.",
-          serves: "Serves 4", time: "30 min",
-          ingredients: ["1 lb potatoes, cut into fries", "Oil for frying", "1 tbsp harissa", "1/2 cup mayo", "Salt"],
-          steps: ["Fry the potatoes twice for a crisp exterior.", "Whisk harissa into the mayo.", "Salt the fries well.", "Serve with the harissa mayo."] },
-        { name: "Couscous Stoofvlees", description: "Belgian beer-braised beef stew served over Algerian couscous instead of bread.",
-          serves: "Serves 4", time: "60 min",
-          ingredients: ["1.5 lb stewing beef", "1 bottle dark beer", "Onion", "2 cups couscous", "Ras el hanout"],
-          steps: ["Brown the beef and onion.", "Braise in beer 45 min until tender.", "Cook the couscous with ras el hanout.", "Serve the stew over couscous."] },
-        { name: "Makroud Waffles", description: "Belgian waffles topped with Algeria's date-filled makroud crumble.",
-          serves: "Serves 6", time: "35 min",
-          ingredients: ["Waffles", "1/2 cup date paste", "Crushed semolina cookie crumble", "Honey"],
-          steps: ["Cook the waffles.", "Warm the date paste slightly.", "Spoon over the waffles with crumble.", "Drizzle with honey."] },
-      ],
-      drink: { name: "Mint Lambic Cooler", description: "Algerian mint tea with a fruity Belgian lambic-style fizz (alcohol-free).",
-        serves: "Serves 4", time: "10 min",
-        ingredients: ["2 cups mint tea, chilled", "Cherry syrup", "Soda", "Ice"],
-        steps: ["Chill the mint tea.", "Stir in a little cherry syrup.", "Top with soda over ice."] },
-    },
-    common: {
-      intro: "Belgium and Algeria share a real colonial-era food history, and both still lean on fried potatoes, slow stews, and a serious sweet tooth.",
-      connections: [
-        { title: "Fries done right", description: "Belgian frites technique and Algeria's own love of crisp fried potatoes both treat the simple fry as worth perfecting." },
-        { title: "Stewed, not rushed", description: "Belgian stoofvlees and Algerian tagine-style stews both reward long, slow cooking for deep flavor." },
-        { title: "A historical thread", description: "Belgium and Algeria's shared colonial history left real culinary traces still present in both food cultures today." },
-      ],
-    },
-  },
   "Portugal|Croatia": {
     menu: {
       bites: [
@@ -3294,36 +3202,6 @@ const PAIRING_CONTENT = {
       ],
     },
   },
-  "Switzerland|Senegal": {
-    menu: {
-      bites: [
-        { name: "Yassa Raclette", description: "Swiss melted raclette cheese drizzled over Senegal's lemon-onion yassa chicken.",
-          serves: "Serves 4", time: "40 min",
-          ingredients: ["4 chicken thighs", "2 onions", "2 lemons", "8 oz raclette cheese"],
-          steps: ["Braise chicken with onion and lemon until tender.", "Melt raclette under a broiler.", "Pour over the chicken.", "Serve with rice or bread."] },
-        { name: "Thieboudienne Rosti", description: "Swiss potato rosti topped with Senegal's spiced thieboudienne fish and rice.",
-          serves: "Serves 4", time: "40 min",
-          ingredients: ["4 potatoes, grated", "Butter", "1 cup spiced fish and rice", "Lemon"],
-          steps: ["Fry grated potato into crispy rosti cakes.", "Warm the spiced fish and rice mixture.", "Top the rosti with the fish mixture.", "Finish with lemon."] },
-        { name: "Chocolate Beignets", description: "Senegal's fried beignets dipped in Swiss melted chocolate.",
-          serves: "Serves 6", time: "30 min",
-          ingredients: ["2 cups flour", "Yeast", "Oil for frying", "6 oz Swiss dark chocolate", "Cream"],
-          steps: ["Make and rise a yeasted dough.", "Fry small rounds until golden.", "Melt chocolate with cream.", "Serve beignets with chocolate for dipping."] },
-      ],
-      drink: { name: "Bissap Alpine Cooler", description: "Senegal's hibiscus bissap with a Swiss alpine herbal note.",
-        serves: "Serves 4", time: "10 min",
-        ingredients: ["3 cups hibiscus tea", "Fresh mint", "Honey", "Ice"],
-        steps: ["Brew and chill the hibiscus tea.", "Stir in honey.", "Garnish with mint and serve over ice."] },
-    },
-    common: {
-      intro: "Switzerland and Senegal both treat melted cheese and citrus-marinated dishes as central comforts, with a deep love of chocolate finishing the meal in both cultures.",
-      connections: [
-        { title: "Citrus and richness", description: "Senegal's lemon-onion yassa and Swiss raclette both balance bright acidity against rich, comforting indulgence." },
-        { title: "Potato traditions", description: "Swiss rosti and Senegalese rice-and-starch sides both turn a humble staple into the meal's foundation." },
-        { title: "Chocolate devotion", description: "Swiss chocolate craft and Senegal's own sweet treats both reflect a serious love of dessert done well." },
-      ],
-    },
-  },
   "Colombia|Ghana": {
     menu: {
       bites: [
@@ -3351,6 +3229,128 @@ const PAIRING_CONTENT = {
         { title: "Rice and bean staples", description: "Ghana's waakye and Colombian bean dishes both treat rice and legumes as the hearty, everyday foundation of a meal." },
         { title: "Plantain love", description: "Fried plantain is a cherished side or sweet in both cuisines, golden and caramelized." },
         { title: "Caramel finishes", description: "Colombian arequipe and Ghana's love of sweet, rich treats both lean into indulgent, caramelized dessert." },
+      ],
+    },
+  },
+
+
+  "Germany|Paraguay": {
+    menu: {
+      bites: [
+        { name: "Chipa Bratwurst Rolls", description: "German bratwurst tucked into Paraguay's chipa cassava-cheese bread instead of a regular roll.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["4 bratwurst", "Chipa rolls (cassava cheese bread)", "Mustard", "Caramelized onion"],
+          steps: ["Grill the bratwurst until cooked through.", "Split the warm chipa rolls.", "Tuck sausages in with onion.", "Finish with mustard."] },
+        { name: "Sopa Paraguaya Pretzel Bites", description: "Paraguay's savory cornbread baked German-pretzel style with a crisp, browned crust.",
+          serves: "Serves 6", time: "40 min",
+          ingredients: ["2 cups cornmeal", "1 cup cottage cheese", "Onion", "3 eggs", "Corn"],
+          steps: ["Saute the onion.", "Mix with cornmeal, cheese, eggs, corn.", "Pour into a pan.", "Bake until golden and set, slice into bites."] },
+        { name: "Dulce de Leche Streusel", description: "German apple streusel cake with a swirl of Paraguayan dulce de leche.",
+          serves: "Serves 6", time: "40 min",
+          ingredients: ["3 apples, sliced", "1 cup flour", "1/2 cup butter", "1/2 cup dulce de leche", "Cinnamon"],
+          steps: ["Layer sliced apples in a baking dish.", "Drizzle with dulce de leche.", "Top with a butter-flour streusel.", "Bake 30 min until golden."] },
+      ],
+      drink: { name: "Terere Apfelschorle", description: "Paraguay's cold terere yerba mate with a German apple-spritz lift.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups cold yerba mate", "1 cup apple juice", "Soda water", "Ice"],
+        steps: ["Mix the cold mate with apple juice.", "Top with soda over ice.", "Stir and serve."] },
+    },
+    common: {
+      intro: "Germany and Paraguay share a real historical thread through 19th-century German immigration, and both cultures lean on hearty corn, cheese, and well-made sausage.",
+      connections: [
+        { title: "Cheese baked into bread", description: "Paraguay's chipa bakes cheese directly into the dough, a comfort German baking traditions appreciate too." },
+        { title: "A real immigrant history", description: "German immigrants settled parts of Paraguay generations ago, leaving food and culture that blended over time." },
+        { title: "Sausage and grain staples", description: "German wurst and Paraguay's corn-based sopa paraguaya both turn humble ingredients into beloved daily food." },
+      ],
+    },
+  },
+  "France|Sweden": {
+    menu: {
+      bites: [
+        { name: "Gravlax Tartines", description: "French open tartines topped with Swedish cured gravlax and a swipe of crème fraîche.",
+          serves: "Serves 4", time: "15 min",
+          ingredients: ["4 bread slices", "6 oz gravlax", "Crème fraîche", "Dill", "Lemon"],
+          steps: ["Toast the bread slices.", "Spread with crème fraîche.", "Top with sliced gravlax and dill.", "Finish with lemon."] },
+        { name: "Köttbullar Croque", description: "French croque monsieur built with Swedish meatballs instead of ham.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["8 bread slices", "12 small meatballs, halved", "Gruyere", "Lingonberry jam", "Butter"],
+          steps: ["Brown the meatballs, halve them.", "Layer with cheese between bread.", "Butter and grill until golden.", "Serve with lingonberry jam."] },
+        { name: "Cardamom Madeleines", description: "French madeleine cakes scented with Sweden's beloved cardamom.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["1 cup flour", "2 eggs", "1/2 cup butter", "1/2 tsp cardamom", "Sugar"],
+          steps: ["Whisk eggs and sugar.", "Fold in flour, melted butter, cardamom.", "Spoon into madeleine molds.", "Bake 12 min until golden."] },
+      ],
+      drink: { name: "Elderflower Kir", description: "French kir given a Swedish elderflower lift.",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["Elderflower cordial", "Soda water", "Ice", "Lemon"],
+        steps: ["Pour elderflower cordial over ice.", "Top with soda.", "Finish with lemon."] },
+    },
+    common: {
+      intro: "French refinement and Swedish simplicity meet in a shared love of cured fish, quality butter, and precise, restrained baking.",
+      connections: [
+        { title: "Cured fish craft", description: "Swedish gravlax and French culinary tradition both treat delicately cured seafood as a point of real skill." },
+        { title: "Butter and pastry", description: "Rich butter anchors both French pastry and Swedish baking, the backbone of countless beloved recipes." },
+        { title: "Quiet elegance", description: "Both cuisines favor clean, high-quality ingredients treated simply rather than smothered in seasoning." },
+      ],
+    },
+  },
+  "Belgium|Senegal": {
+    menu: {
+      bites: [
+        { name: "Yassa Frites", description: "Belgian double-fried fries topped with Senegal's lemon-onion yassa chicken.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["1 lb fries", "2 cups yassa chicken (lemon-onion braised)", "Caramelized onion", "Lemon"],
+          steps: ["Fry the potatoes twice for a crisp exterior.", "Warm the yassa chicken with its onions.", "Pile over the fries.", "Finish with a squeeze of lemon."] },
+        { name: "Thieboudienne Stoofvlees", description: "Belgian beer-braised beef stew finished with Senegal's spiced rice and fish flavors.",
+          serves: "Serves 4", time: "60 min",
+          ingredients: ["1.5 lb stewing beef", "1 bottle dark beer", "Onion", "2 cups spiced rice", "Tomato"],
+          steps: ["Brown the beef and onion.", "Braise in beer and tomato 45 min.", "Cook the spiced rice separately.", "Serve the stew over the rice."] },
+        { name: "Chocolate Beignets", description: "Senegal's fried beignets dipped in Belgian melted chocolate.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["2 cups flour", "Yeast", "Oil for frying", "6 oz Belgian dark chocolate", "Cream"],
+          steps: ["Make and rise a yeasted dough.", "Fry small rounds until golden.", "Melt chocolate with cream.", "Serve beignets with chocolate for dipping."] },
+      ],
+      drink: { name: "Bissap Lambic Cooler", description: "Senegal's hibiscus bissap with a fruity Belgian lambic-style fizz (alcohol-free).",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["3 cups hibiscus tea", "Cherry syrup", "Soda water", "Ice"],
+        steps: ["Brew and chill the hibiscus tea.", "Stir in a little cherry syrup.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "Belgium and Senegal both turn fried potatoes, slow-braised richness, and fine chocolate into comfort, with a real shared history running underneath.",
+      connections: [
+        { title: "Fries done right", description: "Belgian frites technique and Senegal's own love of crisp fried sides both treat the simple fry as worth perfecting." },
+        { title: "Citrus and richness", description: "Senegal's lemon-onion yassa and Belgian stews both balance bright acidity against deep, comforting richness." },
+        { title: "Chocolate devotion", description: "Belgian chocolate craft and Senegal's own sweet treats both reflect a serious love of dessert done well." },
+      ],
+    },
+  },
+  "Switzerland|Algeria": {
+    menu: {
+      bites: [
+        { name: "Harissa Raclette", description: "Swiss melted raclette cheese with a swipe of Algerian harissa for heat.",
+          serves: "Serves 4", time: "20 min",
+          ingredients: ["8 oz raclette cheese", "1 tbsp harissa", "Boiled potatoes", "Cornichons"],
+          steps: ["Melt the raclette under a broiler.", "Stir a little harissa into the melted cheese.", "Pour over boiled potatoes.", "Serve with cornichons."] },
+        { name: "Couscous Rosti", description: "Swiss potato rosti served alongside Algerian spiced couscous.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["4 potatoes, grated", "Butter", "2 cups couscous", "Ras el hanout", "Chickpeas"],
+          steps: ["Fry grated potato into crispy rosti.", "Cook couscous with ras el hanout and chickpeas.", "Plate rosti alongside the couscous.", "Serve hot."] },
+        { name: "Chocolate Makroud", description: "Algeria's date-filled semolina makroud dipped in Swiss melted chocolate.",
+          serves: "Serves 6", time: "40 min",
+          ingredients: ["1.5 cups semolina", "1/2 cup date paste", "6 oz Swiss dark chocolate", "Honey"],
+          steps: ["Form semolina dough, fill with dates.", "Bake into bars until golden.", "Melt the chocolate.", "Dip one end of each bar, drizzle with honey."] },
+      ],
+      drink: { name: "Mint Alpine Cooler", description: "Algerian mint tea with a Swiss alpine herbal touch.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["3 cups mint tea", "Fresh rosemary", "Honey", "Ice"],
+        steps: ["Brew the mint tea with a sprig of rosemary.", "Sweeten with honey.", "Chill and serve over ice."] },
+    },
+    common: {
+      intro: "Switzerland and Algeria both turn melted cheese, spiced grains, and fine chocolate into deeply satisfying comfort, each with real precision in the kitchen.",
+      connections: [
+        { title: "Melted richness", description: "Swiss raclette and Algerian harissa-spiked dishes both lean into rich, warming indulgence on a cold or shared plate." },
+        { title: "Grain as foundation", description: "Algerian couscous and Swiss potato dishes both serve as the hearty base everything else builds on." },
+        { title: "Chocolate and honey", description: "Swiss chocolate craft and Algerian honey-soaked sweets both reflect serious devotion to a well-made dessert." },
       ],
     },
   },
