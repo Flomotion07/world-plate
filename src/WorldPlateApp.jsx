@@ -377,14 +377,33 @@ function transformLiveData(raw) {
   const resultsByMatchNum = {};
   matches.forEach((m) => {
     if (m.num && m.score) {
-      const [sa, sb] = m.score.ft;
+      // Priority: penalty shootout (p) > extra time (et) > full time (ft).
+      // Penalty scores reflect the actual winner; ft/et may show a draw
+      // even when there's a winner decided by the shootout.
+      const [sa, sb] = m.score.p || m.score.et || m.score.ft;
       const a = normalizeTeam(m.team1);
       const b = normalizeTeam(m.team2);
       resultsByMatchNum[m.num] = sa === sb
-        ? { winner: null, loser: null } // shouldn't happen in knockout
+        ? { winner: null, loser: null } // still unresolved — apply PENALTY_WINNERS below
         : sa > sb
         ? { winner: a, loser: b }
         : { winner: b, loser: a };
+    }
+  });
+
+  // Penalty shootout winners — openfootball only records regulation+extra time
+  // scores, so drawn knockout games need their real winner hardcoded here.
+  // Updated as each round's penalty results become known.
+  const PENALTY_WINNERS = {
+    88: "Egypt",    // Australia 1-1 Egypt AET, Egypt won 4-2 on pens
+  };
+  Object.entries(PENALTY_WINNERS).forEach(([num, winner]) => {
+    const m = matches.find(x => x.num === Number(num));
+    if (m && resultsByMatchNum[num] && resultsByMatchNum[num].winner === null) {
+      const a = normalizeTeam(m.team1);
+      const b = normalizeTeam(m.team2);
+      const loser = winner === a ? b : a;
+      resultsByMatchNum[num] = { winner, loser };
     }
   });
   const { standingsByGroup, thirdPlaceStats } = buildStandings(matches);
@@ -3351,6 +3370,250 @@ const PAIRING_CONTENT = {
         { title: "Melted richness", description: "Swiss raclette and Algerian harissa-spiked dishes both lean into rich, warming indulgence on a cold or shared plate." },
         { title: "Grain as foundation", description: "Algerian couscous and Swiss potato dishes both serve as the hearty base everything else builds on." },
         { title: "Chocolate and honey", description: "Swiss chocolate craft and Algerian honey-soaked sweets both reflect serious devotion to a well-made dessert." },
+      ],
+    },
+  },
+
+
+  "Paraguay|France": {
+    menu: {
+      bites: [
+        { name: "Chipa Croque", description: "French croque monsieur made with Paraguay's chipa cassava-cheese bread instead of regular bread.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["Chipa rolls (cassava cheese bread)", "4 oz ham", "Gruyere", "Butter"],
+          steps: ["Split the chipa rolls.", "Layer ham and cheese inside.", "Toast in butter until the cheese melts.", "Serve warm."] },
+        { name: "Sopa Paraguaya Tartines", description: "French open tartines topped with Paraguay's savory sopa paraguaya cornbread.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["4 bread slices", "Sopa paraguaya cornbread, sliced", "Butter"],
+          steps: ["Toast the bread.", "Warm slices of the cornbread.", "Top each toast with a slice.", "Serve open-faced."] },
+        { name: "Dulce de Leche Madeleines", description: "French madeleine cakes drizzled with Paraguayan dulce de leche.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["1 cup flour", "2 eggs", "1/2 cup butter", "Sugar", "1/2 cup dulce de leche"],
+          steps: ["Whisk eggs and sugar.", "Fold in flour and melted butter.", "Bake in madeleine molds 12 min.", "Drizzle dulce de leche over warm madeleines."] },
+      ],
+      drink: { name: "Terere Citron Pressé", description: "Paraguay's cold terere yerba mate with a French citron pressé brightness.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["3 cups cold yerba mate", "Lemon juice", "Sugar syrup", "Ice", "Mint"],
+        steps: ["Mix cold mate with lemon juice and syrup.", "Add mint.", "Serve over ice."] },
+    },
+    common: {
+      intro: "France and Paraguay both build their tables on well-made bread and cheese, with a quiet pride in technique that runs through baking in both cultures.",
+      connections: [
+        { title: "Cheese baked into the bread", description: "Paraguayan chipa bakes cheese right into the dough, a trick French baking embraces in its own way too." },
+        { title: "Corn and grain craft", description: "Sopa paraguaya and French savory baking both turn humble grain into something worth making carefully." },
+        { title: "A shared sweet pause", description: "French patisserie and Paraguay's dulce de leche treats both treat dessert as a small, deliberate pleasure." },
+      ],
+    },
+  },
+  "Canada|Morocco": {
+    menu: {
+      bites: [
+        { name: "Tagine Poutine", description: "Canadian poutine topped with Moroccan-spiced lamb tagine instead of gravy.",
+          serves: "Serves 4", time: "45 min",
+          ingredients: ["1 lb fries", "1 cup cheese curds", "2 cups lamb tagine, warmed", "Ras el hanout", "Cilantro"],
+          steps: ["Bake fries until crisp.", "Warm the tagine with ras el hanout.", "Layer fries with curds.", "Top with tagine and cilantro."] },
+        { name: "Harissa Maple Flatbread", description: "Warm flatbread brushed with Moroccan harissa and a thread of Canadian maple.",
+          serves: "Serves 4", time: "20 min",
+          ingredients: ["2 large flatbreads", "1/2 cup harissa", "1 tbsp maple syrup", "Feta", "Fresh mint"],
+          steps: ["Warm the flatbreads.", "Spread harissa across each.", "Drizzle lightly with maple syrup.", "Top with feta and mint, slice and serve."] },
+        { name: "Maple Chebakia Bites", description: "Moroccan honey-sesame chebakia cookies finished with Canadian maple.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Chebakia (or sesame-honey cookies)", "2 tbsp maple syrup", "Sesame seeds", "Cinnamon"],
+          steps: ["Warm the cookies slightly.", "Drizzle with maple syrup.", "Scatter sesame seeds and cinnamon.", "Serve warm."] },
+      ],
+      drink: { name: "Rooibos Mint Cooler", description: "Canadian-style cold brew with Moroccan mint.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["3 cups brewed tea, chilled", "Fresh mint", "Maple syrup", "Ice"],
+        steps: ["Chill the tea.", "Stir in maple syrup.", "Garnish with mint and serve over ice."] },
+    },
+    common: {
+      intro: "Canada and Morocco both welcome guests with something warm and sweet, and both have a long tradition of turning humble staples into deeply comforting food.",
+      connections: [
+        { title: "Sweet from the land", description: "Canadian maple and Moroccan honey are each harvested natural sweeteners, folded into everything from savoury dishes to dessert." },
+        { title: "Slow-cooked comfort", description: "Moroccan tagine and Canadian slow-braised dishes both reward patience, building deep flavor over time." },
+        { title: "Warm hospitality", description: "Both cultures treat feeding guests well as a serious expression of care, never rushed and always generous." },
+      ],
+    },
+  },
+  "Brazil|Norway": {
+    menu: {
+      bites: [
+        { name: "Gravlax Coxinha", description: "Brazilian coxinha croquettes filled with Norwegian cured gravlax instead of chicken.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["6 oz gravlax, chopped", "2 cups mashed potato dough", "Dill", "Breadcrumbs", "Oil for frying"],
+          steps: ["Mix chopped gravlax with dill.", "Wrap in dough, shape into teardrops.", "Bread and fry until golden.", "Serve hot."] },
+        { name: "Pão de Queijo Gravlax", description: "Brazilian cheese bread warm from the oven, topped with Norwegian gravlax and crème fraîche.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["2 cups tapioca flour", "1 cup milk", "1.5 cups cheese", "2 eggs", "6 oz gravlax", "Crème fraîche"],
+          steps: ["Make the cheese bread and bake until puffed.", "Split while warm.", "Top with gravlax and a dab of crème fraîche.", "Serve immediately."] },
+        { name: "Brigadeiro Lingonberry Bites", description: "Brazilian chocolate brigadeiro fudge rolled in crushed lingonberry for a Nordic twist.",
+          serves: "Serves 6", time: "25 min",
+          ingredients: ["1 can condensed milk", "3 tbsp cocoa", "1 tbsp butter", "Dried lingonberries, crushed"],
+          steps: ["Cook condensed milk, cocoa, butter into thick fudge.", "Cool until rollable.", "Roll into balls.", "Coat in crushed dried lingonberry."] },
+      ],
+      drink: { name: "Yuzu Caipirinha Mocktail", description: "Brazilian lime caipirinha brightened with a Scandinavian berry note.",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["3 limes", "Lingonberry syrup", "2 tbsp sugar", "Soda water", "Ice"],
+        steps: ["Muddle lime, sugar, and a little lingonberry syrup.", "Add ice.", "Top with soda water."] },
+    },
+    common: {
+      intro: "Brazil and Norway seem like opposites, but both built national identities around coastal abundance, and both take their beloved fried snacks and caramel sweets very seriously.",
+      connections: [
+        { title: "From the sea", description: "Norwegian gravlax and Brazil's coastal seafood culture both show deep skill working with what the water provides." },
+        { title: "Fried and beloved", description: "Brazilian coxinha and Norwegian fish cakes both prove that a well-made fried snack is a source of real national pride." },
+        { title: "Caramel devotion", description: "Brigadeiro and Norwegian caramel-laced treats both reflect a shared culture of rich, indulgent, homemade sweets." },
+      ],
+    },
+  },
+  "Mexico|England": {
+    menu: {
+      bites: [
+        { name: "Chilli Scotch Eggs", description: "English scotch eggs wrapped in Mexican-spiced chorizo and chipotle sausage meat.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["4 soft-boiled eggs", "1 lb Mexican chorizo", "1 tsp chipotle paste", "Breadcrumbs", "Oil"],
+          steps: ["Mix chorizo with chipotle.", "Wrap each egg.", "Bread and fry until golden.", "Halve and serve with salsa."] },
+        { name: "Fish Taco Bites", description: "British-style beer-battered fish served in mini Mexican taco format with slaw and lime.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["1 lb white fish", "Beer batter", "Mini tortillas", "Cabbage slaw", "Lime", "Hot sauce"],
+          steps: ["Beer-batter and fry the fish until golden.", "Warm the tortillas.", "Build tacos with fish, slaw, lime.", "Finish with hot sauce."] },
+        { name: "Tres Leches Trifle", description: "English trifle layers built with Mexican tres leches flavors: soaked sponge, cream, fruit.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Sponge cake", "Mixed milk soak (condensed, evaporated, whole)", "Whipped cream", "Strawberries"],
+          steps: ["Soak sponge pieces in the mixed milks.", "Layer in glasses with whipped cream.", "Top with strawberries.", "Chill before serving."] },
+      ],
+      drink: { name: "Hibiscus Ginger Fizz", description: "Mexican agua de jamaica hibiscus with an English ginger-beer kick.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups hibiscus tea", "Ginger beer", "Lime", "Ice"],
+        steps: ["Chill the hibiscus tea.", "Pour over ice with ginger beer.", "Finish with lime."] },
+    },
+    common: {
+      intro: "Mexico and England both love a fried, battered, golden snack eaten standing up, and both have a warm, sweet dessert tradition that feels like home.",
+      connections: [
+        { title: "Battered and fried", description: "English beer-battered fish and Mexican fried street food both celebrate crispy, golden battered cooking as a national comfort." },
+        { title: "Chilli heat", description: "Mexican chipotle and English chilli-spiked dishes both show cultures that have genuinely embraced heat into the everyday table." },
+        { title: "Creamy, sweet endings", description: "English trifle and Mexican tres leches both build dessert on soaked sponge, cream, and fruit — the same logic, different ingredients." },
+      ],
+    },
+  },
+  "Portugal|Spain": {
+    menu: {
+      bites: [
+        { name: "Bacalhau Croquetas", description: "Spanish croquetas filled with Portuguese salt cod bacalhau instead of the usual ham.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["1 lb salt cod, soaked and shredded", "Bechamel sauce", "Flour, egg, breadcrumbs", "Lemon", "Oil for frying"],
+          steps: ["Mix bacalhau into a thick bechamel, chill.", "Shape into logs.", "Coat in flour, egg, breadcrumbs.", "Fry until golden, serve with lemon."] },
+        { name: "Pastel de Nata Churros", description: "Spanish churros dipped in a Portuguese custard cream instead of chocolate.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Churro dough", "Oil for frying", "1 cup custard cream", "Cinnamon sugar"],
+          steps: ["Pipe and fry the churros.", "Roll in cinnamon sugar.", "Serve warm with custard cream for dipping."] },
+        { name: "Jamon Pastéis", description: "Portuguese pastéis pastry filled with Spanish jamon and manchego.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["Puff pastry", "4 oz jamon, chopped", "1/2 cup manchego, crumbled", "1 egg"],
+          steps: ["Fill pastry squares with jamon and manchego.", "Fold and seal, brush with egg.", "Bake until golden.", "Serve warm."] },
+      ],
+      drink: { name: "Sangria Citrus Spritz", description: "The Iberian Peninsula's shared love of citrus fruit in a single glass.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups red grape juice", "1 orange, sliced", "Lemon juice", "Soda water", "Ice"],
+        steps: ["Mix grape juice with lemon juice.", "Add orange slices, chill.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "Portugal and Spain share a peninsula, a language family, and centuries of culinary history so intertwined that you'd be hard-pressed to say where one ends and the other begins.",
+      connections: [
+        { title: "Shared Iberian roots", description: "Salt cod, chorizo, olive oil, and rice pudding all move freely across the Portuguese-Spanish border, claimed proudly by both sides." },
+        { title: "Pastry as identity", description: "Portuguese pastéis and Spanish croquetas both reflect a culture where fried or baked pastry is a daily indulgence, not a treat." },
+        { title: "Cured meat devotion", description: "Portuguese presunto and Spanish jamon are cousins in the same curing tradition, both objects of near-religious affection." },
+      ],
+    },
+  },
+  "United States|Belgium": {
+    menu: {
+      bites: [
+        { name: "Belgian Waffle Slider", description: "American burger slider served on a crispy Belgian waffle instead of a bun.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["1 lb ground beef", "Small waffles", "Cheddar", "Pickles", "Mustard"],
+          steps: ["Form and sear the burger patties.", "Melt cheese on top.", "Build sliders on warm waffles.", "Add pickles and mustard."] },
+        { name: "Currywurst Mac and Cheese", description: "American mac and cheese topped with Belgian-style currywurst sausage.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["2 cups mac and cheese", "4 bratwurst", "Curry ketchup", "Curry powder"],
+          steps: ["Make the mac and cheese.", "Grill and slice the sausages.", "Top the mac with sausage.", "Drizzle with curry ketchup."] },
+        { name: "Chocolate Chip Cookie Brownie", description: "The best of American cookies meets Belgian chocolate brownie in one bite.",
+          serves: "Serves 6", time: "35 min",
+          ingredients: ["1 cup dark Belgian chocolate, chopped", "1/2 cup butter", "2 eggs", "1/2 cup sugar", "1/2 cup flour", "Chocolate chips"],
+          steps: ["Melt chocolate and butter.", "Whisk in eggs and sugar.", "Fold in flour and chips.", "Bake 20 min until set but fudgy."] },
+      ],
+      drink: { name: "Cherry Lemonade", description: "American lemonade with a Belgian cherry-lambic-style twist (alcohol-free).",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["3 cups lemonade", "Cherry syrup", "Ice", "Mint"],
+        steps: ["Mix lemonade with cherry syrup.", "Serve over ice with mint."] },
+    },
+    common: {
+      intro: "America and Belgium both built beloved fast-food cultures — fries, burgers, waffles — and both happen to produce some of the world's most-loved chocolate.",
+      connections: [
+        { title: "Fries and fast food", description: "Belgian frites and American fast food both elevated the humble fried potato to an international cultural export." },
+        { title: "Waffle culture", description: "Belgian and American waffles are genuinely different things, but both cultures take their version deeply seriously." },
+        { title: "Chocolate devotion", description: "Belgian pralines and American chocolate chip everything both show nations genuinely obsessed with chocolate in everyday life." },
+      ],
+    },
+  },
+    "Switzerland|Colombia": {
+    menu: {
+      bites: [
+        { name: "Arepa Rosti", description: "Colombian corn arepas cooked Swiss rosti-style — pressed, pan-fried, and crispy.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["Arepa dough", "Butter", "Cheese", "Scallion", "Sour cream"],
+          steps: ["Flatten arepa dough into thin cakes.", "Fry in butter until golden and crisp on both sides.", "Top with cheese.", "Serve with scallion and sour cream."] },
+        { name: "Bandeja Fondue", description: "Swiss cheese fondue served Colombian bandeja paisa-style with chorizo, beans, and bread for dipping.",
+          serves: "Serves 4", time: "25 min",
+          ingredients: ["8 oz Gruyere", "8 oz Emmental", "1 cup white grape juice", "Chorizo, sliced", "Cooked red beans", "Bread cubes"],
+          steps: ["Melt cheeses into the warm grape juice, stir smooth.", "Keep warm in a pot.", "Serve chorizo, beans, and bread for dipping."] },
+        { name: "Arequipe Chocolate Fondue", description: "Swiss chocolate fondue swirled with Colombian arequipe caramel.",
+          serves: "Serves 6", time: "20 min",
+          ingredients: ["8 oz Swiss dark chocolate", "1/2 cup cream", "1/4 cup arequipe", "Strawberries, bread cubes"],
+          steps: ["Melt chocolate into warm cream.", "Swirl in arequipe.", "Keep warm in a pot.", "Dip strawberries and bread."] },
+      ],
+      drink: { name: "Tinto Alpine Cooler", description: "Colombian tinto coffee with a Swiss alpine herbal touch, served cold.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups strong coffee, chilled", "Fresh rosemary", "Sugar", "Ice"],
+        steps: ["Brew strong coffee with rosemary, chill.", "Sweeten to taste.", "Serve over ice."] },
+    },
+    common: {
+      intro: "Switzerland and Colombia both treat cheese, coffee, and chocolate as points of national pride — three things that happen to pair extraordinarily well together.",
+      connections: [
+        { title: "Coffee devotion", description: "Colombian coffee and Swiss cafe culture both reflect nations that take the quality of the cup very seriously indeed." },
+        { title: "Chocolate pride", description: "Swiss and Colombian chocolate are each world-famous, starting from different traditions but arriving at the same devotion." },
+        { title: "Cheese as comfort", description: "Swiss fondue and Colombian cheese-filled dishes both treat melted, gooey cheese as a warming, social pleasure." },
+      ],
+    },
+  },
+
+
+  "Argentina|Egypt": {
+    menu: {
+      bites: [
+        { name: "Koshari Empanadas", description: "Argentine empanadas filled with Egypt's koshari lentils, rice, and crispy onion.",
+          serves: "Serves 4", time: "45 min",
+          ingredients: ["Empanada dough", "1 cup lentils", "1 cup rice", "Fried onions", "Spiced tomato sauce"],
+          steps: ["Mix lentils, rice, and tomato sauce into a filling.", "Fill dough rounds, fold and seal.", "Bake or fry until golden.", "Serve with extra fried onion on top."] },
+        { name: "Dukkah Asado Skewers", description: "Argentine asado-style beef skewers crusted in Egyptian dukkah nut-and-spice.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["1 lb beef sirloin, cubed", "3 tbsp dukkah", "Olive oil", "Lemon", "Chimichurri"],
+          steps: ["Toss beef with dukkah and olive oil.", "Thread onto skewers.", "Grill over high heat 3-4 min per side.", "Serve with lemon and chimichurri."] },
+        { name: "Basbousa Alfajores", description: "Argentine alfajor cookies filled with a semolina-syrup basbousa-style caramel.",
+          serves: "Serves 6", time: "35 min",
+          ingredients: ["Shortbread cookies", "1/2 cup dulce de leche", "2 tbsp semolina, toasted", "Honey syrup", "Pistachio"],
+          steps: ["Mix dulce de leche with toasted semolina.", "Sandwich between cookies.", "Drizzle with honey syrup.", "Top with chopped pistachio."] },
+      ],
+      drink: { name: "Karkade Mate", description: "Argentine yerba mate infused with Egypt's hibiscus karkade.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups brewed yerba mate, cooled", "1 cup hibiscus tea", "Honey", "Ice"],
+        steps: ["Combine cooled mate and hibiscus tea.", "Sweeten with honey.", "Serve over ice."] },
+    },
+    common: {
+      intro: "Argentina and Egypt both built their food cultures on grain, grilled meat, and a serious sweet tooth, with immigrant communities creating real culinary crossovers in both directions.",
+      connections: [
+        { title: "Grain and legume staples", description: "Egyptian koshari and Argentine grain dishes both treat lentils and rice as beloved, filling everyday food." },
+        { title: "Grilled meat as identity", description: "Argentine asado and Egyptian grilled kofta and kebabs both treat meat over fire as a communal, celebratory act." },
+        { title: "Syrup-soaked sweets", description: "Egypt's basbousa and Argentina's dulce de leche both show cultures devoted to rich, sweet, indulgent dessert." },
       ],
     },
   },
