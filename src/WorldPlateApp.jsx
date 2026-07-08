@@ -3618,6 +3618,128 @@ const PAIRING_CONTENT = {
     },
   },
 
+
+  "France|Morocco": {
+    menu: {
+      bites: [
+        { name: "Chermoula Croque", description: "French croque monsieur spread with Moroccan chermoula herb paste before grilling.",
+          serves: "Serves 4", time: "25 min",
+          ingredients: ["8 slices bread", "2 tbsp chermoula paste", "Gruyere", "4 oz ham", "Butter"],
+          steps: ["Spread chermoula on the inside of each slice.", "Layer ham and cheese.", "Butter outside, grill until golden.", "Slice and serve hot."] },
+        { name: "Tagine Tartines", description: "French open tartines topped with Moroccan-spiced lamb tagine and preserved lemon.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["4 bread slices", "1.5 cups lamb tagine, warmed", "Preserved lemon", "Cilantro"],
+          steps: ["Toast the bread.", "Spoon warm tagine over each slice.", "Top with sliced preserved lemon.", "Finish with cilantro."] },
+        { name: "Madeleine Chebakia", description: "French madeleine cakes dipped in Moroccan honey-sesame chebakia glaze.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["1 cup flour", "2 eggs", "1/2 cup butter", "Sugar", "1/2 cup honey", "Sesame seeds", "Orange blossom water"],
+          steps: ["Make and bake the madeleines.", "Warm honey with orange blossom water.", "Dip madeleines in the glaze.", "Scatter sesame seeds."] },
+      ],
+      drink: { name: "Mint Kir", description: "French kir with a Moroccan mint-tea twist.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups mint tea, chilled", "Blackcurrant syrup", "Soda", "Ice"],
+        steps: ["Chill the mint tea.", "Stir in blackcurrant syrup.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "France and Morocco share a deep colonial history that left a real culinary mark — French technique is woven into Moroccan cooking, and Moroccan flavors are now woven into everyday French life.",
+      connections: [
+        { title: "Herbs as identity", description: "French herbes de Provence and Moroccan chermoula both define a cuisine through its signature herb blends." },
+        { title: "Slow-cooked richness", description: "Moroccan tagine and French braises both build deep, layered flavor from hours of patient cooking." },
+        { title: "A real community", description: "Morocco is France's largest immigrant community, and Moroccan flavors have genuinely shaped what French people eat every day." },
+      ],
+    },
+  },
+  "Spain|Belgium": {
+    menu: {
+      bites: [
+        { name: "Patatas Bravas Frites", description: "Spanish patatas bravas meets Belgian double-fried frites — crispy, spicy, sauced.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["1 lb potatoes, cut into chunks and fries", "Bravas sauce", "Mayo", "Oil for frying"],
+          steps: ["Fry potatoes twice for a crisp exterior.", "Separate into two styles: chunky bravas and thin frites.", "Top bravas with bravas sauce, frites with mayo.", "Serve together on one platter."] },
+        { name: "Croquetas Stoofvlees", description: "Spanish croquetas filled with Belgian beer-braised stoofvlees beef.",
+          serves: "Serves 4", time: "50 min",
+          ingredients: ["1.5 cups stoofvlees (beer-braised beef), shredded and thickened", "Bechamel", "Breadcrumbs", "1 egg", "Oil for frying"],
+          steps: ["Mix shredded beef into a thick bechamel, chill.", "Shape into logs.", "Coat in breadcrumbs.", "Fry until deep golden."] },
+        { name: "Chocolate Churros", description: "Spanish churros with Belgian dark chocolate for dipping — the obvious, perfect combination.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Churro dough", "Oil for frying", "8 oz Belgian dark chocolate", "1/2 cup cream", "Cinnamon sugar"],
+          steps: ["Pipe and fry the churros.", "Roll in cinnamon sugar.", "Melt chocolate into warm cream.", "Serve immediately with chocolate for dipping."] },
+      ],
+      drink: { name: "Sangria Cherry Fizz", description: "Spanish sangria with a Belgian cherry-beer-style brightness, alcohol-free.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups red grape juice", "Cherry syrup", "Orange slices", "Soda", "Ice"],
+        steps: ["Mix grape juice with cherry syrup.", "Add orange slices.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "Spain and Belgium both built beloved national dishes out of fried potatoes and take their chocolate extremely seriously — two cultures where indulgent food is a point of national pride.",
+      connections: [
+        { title: "Fried potato devotion", description: "Spanish patatas bravas and Belgian frites both elevate the humble potato into something worth arguing about." },
+        { title: "Beer and braising", description: "Belgian stoofvlees and Spanish slow-braised dishes both use long cooking and good drink to build deep flavor." },
+        { title: "Chocolate as craft", description: "Belgian pralines and Spanish chocolate for churros both treat chocolate as a serious, cultural institution." },
+      ],
+    },
+  },
+  "Norway|England": {
+    menu: {
+      bites: [
+        { name: "Gravlax Scotch Eggs", description: "English scotch eggs where the sausage meat is replaced with a herbed Norwegian gravlax coating.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["4 soft-boiled eggs", "6 oz gravlax, finely chopped", "1/2 lb sausage meat", "Dill", "Breadcrumbs", "Oil"],
+          steps: ["Mix gravlax with sausage meat and dill.", "Wrap each egg.", "Bread and fry until golden.", "Halve and serve."] },
+        { name: "Brunost Cheese Pie", description: "English-style hand pie with Norway's caramel brunost cheese and lingonberry.",
+          serves: "Serves 4", time: "45 min",
+          ingredients: ["Puff pastry", "4 oz brunost, sliced", "Lingonberry jam", "1 egg"],
+          steps: ["Fill pastry squares with brunost and a spoon of jam.", "Fold and seal, brush with egg.", "Bake until golden.", "Serve warm."] },
+        { name: "Cardamom Trifle", description: "English trifle layered with Norwegian cardamom cream and lingonberry.",
+          serves: "Serves 6", time: "25 min",
+          ingredients: ["Sponge cake", "1/4 tsp cardamom", "2 cups whipped cream", "Lingonberry jam", "Custard"],
+          steps: ["Layer sponge and custard in glasses.", "Fold cardamom into the whipped cream.", "Layer cream and lingonberry.", "Chill before serving."] },
+      ],
+      drink: { name: "Elderflower Ginger Fizz", description: "Swedish-Norwegian elderflower with an English ginger-beer punch.",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["Elderflower cordial", "Ginger beer", "Lemon", "Ice"],
+        steps: ["Mix elderflower cordial with ginger beer over ice.", "Finish with lemon."] },
+    },
+    common: {
+      intro: "Norway and England share a long North Sea history, and both built food cultures on cured fish, quality dairy, and a deep love of a well-made golden pastry.",
+      connections: [
+        { title: "Cured fish and the sea", description: "Norwegian gravlax and English smoked and cured fish traditions both reflect cultures shaped by what the North Sea provides." },
+        { title: "Pastry and pies", description: "English hand pies and Norwegian baked pastries both make a crisp, golden shell the home of something comforting." },
+        { title: "Cream and indulgence", description: "Norwegian brown cheese and English trifle cream both show cultures that take dairy-rich indulgence very seriously." },
+      ],
+    },
+  },
+  "Argentina|Switzerland": {
+    menu: {
+      bites: [
+        { name: "Raclette Empanadas", description: "Argentine empanadas filled with melted Swiss raclette cheese and caramelized onion.",
+          serves: "Serves 4", time: "45 min",
+          ingredients: ["Empanada dough", "6 oz raclette, diced", "1 onion, caramelized", "Cornichons", "1 egg"],
+          steps: ["Fill dough rounds with raclette and onion.", "Fold and seal, brush with egg.", "Bake until golden.", "Serve with cornichons."] },
+        { name: "Asado Rosti", description: "Argentine-style grilled beef skirt steak served over Swiss crispy rosti potato cake.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["1 lb skirt steak", "4 potatoes, grated", "Butter", "Chimichurri"],
+          steps: ["Fry grated potato into crispy rosti cakes.", "Grill the skirt steak, rest and slice.", "Plate steak over rosti.", "Top with chimichurri."] },
+        { name: "Dulce de Leche Fondue", description: "Swiss chocolate fondue swirled with Argentine dulce de leche, for dipping churros or fruit.",
+          serves: "Serves 6", time: "15 min",
+          ingredients: ["8 oz Swiss dark chocolate", "1/2 cup cream", "1/4 cup dulce de leche", "Churros or apple slices for dipping"],
+          steps: ["Melt chocolate into warm cream.", "Swirl in dulce de leche.", "Keep warm in a pot.", "Dip churros or apple slices."] },
+      ],
+      drink: { name: "Mate Apple Spritz", description: "Argentine yerba mate with a Swiss apple-spritz lift.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups brewed yerba mate, cooled", "1 cup apple juice", "Soda", "Ice"],
+        steps: ["Mix cooled mate with apple juice.", "Top with soda over ice.", "Serve immediately."] },
+    },
+    common: {
+      intro: "Argentina and Switzerland both take their cheese, their chocolate, and their grilled meat extremely seriously — two cultures where food quality is non-negotiable.",
+      connections: [
+        { title: "Cheese as comfort", description: "Swiss raclette and Argentine cheese dishes both treat melted, rich cheese as a warming, communal pleasure." },
+        { title: "Grilled meat pride", description: "Argentine asado and Swiss grilled traditions both center the meal on quality meat cooked simply and well." },
+        { title: "Caramel and chocolate", description: "Swiss chocolate and Argentine dulce de leche are each national sweet obsessions that happen to taste remarkable together." },
+      ],
+    },
+  },
+
 };
 
 function getPairingContent(teamA, teamB) {
