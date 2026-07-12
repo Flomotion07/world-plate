@@ -3740,6 +3740,68 @@ const PAIRING_CONTENT = {
     },
   },
 
+
+  "France|Spain": {
+    menu: {
+      bites: [
+        { name: "Patatas Bravas Tartines", description: "French open tartines topped with Spanish patatas bravas and a swipe of aioli.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["4 bread slices", "2 cups cubed roasted potato", "Bravas sauce", "Aioli", "Smoked paprika"],
+          steps: ["Toast the bread.", "Roast potato cubes until crispy.", "Top toast with potatoes.", "Drizzle bravas sauce and aioli, dust with paprika."] },
+        { name: "Jamon Croque Madame", description: "French croque madame elevated with Spanish jamon serrano and manchego.",
+          serves: "Serves 4", time: "25 min",
+          ingredients: ["8 bread slices", "4 oz jamon serrano", "Manchego, shredded", "4 eggs", "Butter", "Bechamel"],
+          steps: ["Build croques with jamon and manchego.", "Grill until golden.", "Top each with a fried egg.", "Finish with a drizzle of bechamel."] },
+        { name: "Churros Madeleines", description: "The best of both worlds — French madeleine batter piped and fried churro-style.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["1 cup flour", "2 eggs", "1/2 cup butter", "Sugar", "Oil for frying", "Chocolate sauce", "Cinnamon sugar"],
+          steps: ["Make madeleine batter.", "Pipe into hot oil.", "Fry until golden.", "Roll in cinnamon sugar, serve with chocolate."] },
+      ],
+      drink: { name: "Sangria Kir", description: "Spanish sangria meets French kir — the Iberian-Gallic alliance in a glass.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups red grape juice", "Blackcurrant syrup", "Orange slices", "Soda", "Ice"],
+        steps: ["Mix grape juice with blackcurrant syrup.", "Add orange slices.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "France and Spain share the Pyrenees and centuries of culinary exchange — jamon crosses the border as freely as cognac, and both cultures treat a long, unhurried meal as the highest form of living.",
+      connections: [
+        { title: "Cured meat as culture", description: "French charcuterie and Spanish jamon are cousins in the same centuries-old tradition of curing and aging the finest cuts." },
+        { title: "The long lunch", description: "Both French and Spanish cultures treat the midday meal as sacred, a slow, multi-course affair not to be rushed." },
+        { title: "Bread and pastry as daily art", description: "French boulangeries and Spanish panaderias both treat daily bread as something worth crafting carefully, every morning." },
+      ],
+    },
+  },
+  "England|Argentina": {
+    menu: {
+      bites: [
+        { name: "Milanesa Scotch Eggs", description: "English scotch eggs breaded Argentine milanesa-style with a chimichurri dipping sauce.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["4 soft-boiled eggs", "1 lb sausage meat", "Flour, egg, breadcrumbs", "Chimichurri", "Oil"],
+          steps: ["Wrap each egg in sausage meat.", "Bread carefully — flour, egg, breadcrumbs.", "Fry until deep golden.", "Halve and serve with chimichurri."] },
+        { name: "Dulce de Leche Banoffee", description: "English banoffee pie with Argentine dulce de leche in place of caramel — its natural home.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Shortbread crust", "1 cup dulce de leche", "3 ripe bananas", "Whipped cream"],
+          steps: ["Press shortbread into a tart base.", "Spread dulce de leche over.", "Layer sliced bananas.", "Top with whipped cream, chill before serving."] },
+        { name: "Choripan Sausage Rolls", description: "British sausage rolls made with Argentine chorizo and a chimichurri-butter glaze.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["Puff pastry", "4 chorizo sausages", "Chimichurri", "1 tbsp butter", "1 egg"],
+          steps: ["Roll pastry around each chorizo, seal.", "Brush with egg.", "Bake until golden.", "Glaze with chimichurri butter while hot."] },
+      ],
+      drink: { name: "Mate Ginger Beer", description: "Argentine mate with an English ginger-beer kick — cold, sharp, and refreshing.",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["2 cups brewed yerba mate, cooled", "Ginger beer", "Lime", "Ice"],
+        steps: ["Mix cooled mate with ginger beer.", "Add a squeeze of lime.", "Serve over ice."] },
+    },
+    common: {
+      intro: "England and Argentina have one of sport's great rivalries — and it turns out their kitchens share more common ground than their football history might suggest, from breaded cutlets to caramel sweets.",
+      connections: [
+        { title: "Breaded and fried", description: "English sausage rolls and scotch eggs and Argentine milanesa all celebrate a crispy, golden breaded exterior as a national comfort." },
+        { title: "Caramel as birthright", description: "Dulce de leche and English toffee and banoffee both show cultures where sweet, sticky caramel is built into the national identity." },
+        { title: "The rivalría", description: "The Hand of God, the Falklands, 1986 — but Maradona also loved England's pubs, and Argentine expats in London feel right at home. The rivalry runs deep and so does the respect." },
+      ],
+    },
+  },
+
 };
 
 function getPairingContent(teamA, teamB) {
