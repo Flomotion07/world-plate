@@ -4455,12 +4455,109 @@ function liveKnockoutByRound(liveKnockout) {
     .map((r) => ({ name: r, matches: byRound[r].sort((a, b) => a.num - b.num) }));
 }
 
+function BracketRoundList({ courses, onSelect }) {
+  // Mobile-first: clean vertical list, one round per section.
+  const [openRound, setOpenRound] = useState(null);
+
+  // Default open to the most recent round that has at least one real team.
+  React.useEffect(() => {
+    const latest = [...courses].reverse().find(r =>
+      r.matches.some(m => !isPlaceholderCode(m.teamA) || !isPlaceholderCode(m.teamB))
+    );
+    if (latest) setOpenRound(latest.name);
+    else if (courses.length) setOpenRound(courses[courses.length - 1].name);
+  }, [courses.length]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {courses.map((round) => {
+        const isOpen = openRound === round.name;
+        const hasReal = round.matches.some(m => !isPlaceholderCode(m.teamA) || !isPlaceholderCode(m.teamB));
+        return (
+          <div key={round.name} style={{ background: C.surface, borderRadius: "14px", overflow: "hidden" }}>
+            <button
+              onClick={() => setOpenRound(isOpen ? null : round.name)}
+              style={{
+                width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                padding: "14px 16px", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit",
+              }}
+            >
+              <span style={{ fontSize: "14px", fontWeight: 700, color: C.white }}>{round.name}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {hasReal && <span style={{ fontSize: "11px", fontWeight: 600, color: C.signal }}>
+                  {round.matches.filter(m => !isPlaceholderCode(m.teamA) && !isPlaceholderCode(m.teamB)).length} matches
+                </span>}
+                <span style={{ fontSize: "16px", color: C.mutedDark, lineHeight: 1 }}>{isOpen ? "−" : "+"}</span>
+              </div>
+            </button>
+            {isOpen && (
+              <div style={{ borderTop: `1px solid ${C.border}` }}>
+                {round.matches.map((m, i) => {
+                  const bothReal = !isPlaceholderCode(m.teamA) && !isPlaceholderCode(m.teamB);
+                  return (
+                    <button
+                      key={m.id || `${round.name}-${i}`}
+                      onClick={() => bothReal && onSelect(m)}
+                      style={{
+                        width: "100%", display: "flex", alignItems: "center", gap: "8px",
+                        padding: "14px 16px", background: "none", border: "none",
+                        borderBottom: i < round.matches.length - 1 ? `1px solid ${C.border}` : "none",
+                        cursor: bothReal ? "pointer" : "default", fontFamily: "inherit",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1, minWidth: 0, justifyContent: "flex-end" }}>
+                        <span style={{ fontSize: "14px", fontWeight: 400, color: bothReal ? C.white : C.mutedDark, textAlign: "right", lineHeight: 1.3 }}>
+                          {isPlaceholderCode(m.teamA) ? "TBD" : m.teamA}
+                        </span>
+                        {!isPlaceholderCode(m.teamA) && <FlagChip team={m.teamA} size={24} />}
+                      </div>
+                      <div style={{ flexShrink: 0, width: "80px", display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+                        <UtensilsIcon color={C.mutedDark} size={16} />
+                        {m.date && <div style={{ fontSize: "10px", color: C.muted, textAlign: "center", lineHeight: 1.3 }}>{m.date}<br />{m.time}</div>}
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1, minWidth: 0, justifyContent: "flex-start" }}>
+                        {!isPlaceholderCode(m.teamB) && <FlagChip team={m.teamB} size={24} />}
+                        <span style={{ fontSize: "14px", fontWeight: 400, color: bothReal ? C.white : C.mutedDark, textAlign: "left", lineHeight: 1.3 }}>
+                          {isPlaceholderCode(m.teamB) ? "TBD" : m.teamB}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function BracketView({ onSelect, liveKnockout }) {
   const courses = liveKnockout && liveKnockout.length ? liveKnockoutByRound(liveKnockout) : COURSES;
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 700);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div>
+        <p style={{ fontSize: "12px", color: C.mutedDark, marginBottom: "14px", lineHeight: 1.5 }}>
+          Tap a round to see its matchups. Tap any game for its watch-party menu.
+        </p>
+        <BracketRoundList courses={courses} onSelect={onSelect} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <p style={{ fontSize: "12px", color: C.mutedDark, marginBottom: "14px", lineHeight: 1.5 }}>
-        Scroll horizontally to follow the knockout path. TBD slots lock in as group results finalize.
+        Scroll horizontally to follow the knockout path. TBD slots lock in as results finalize.
       </p>
       <div className="bracket-scroll" style={{ display: "flex", gap: "26px", overflowX: "auto", paddingBottom: "10px" }}>
         {courses.map((round) => (
