@@ -3802,6 +3802,68 @@ const PAIRING_CONTENT = {
     },
   },
 
+
+  "Spain|Argentina": {
+    menu: {
+      bites: [
+        { name: "Milanesa Croquetas", description: "Spain's beloved croquetas filled with Argentine milanesa-breaded veal and chimichurri bechamel.",
+          serves: "Serves 4", time: "45 min",
+          ingredients: ["1 cup thin-breaded veal, chopped", "Bechamel", "1 tbsp chimichurri paste", "Breadcrumbs", "1 egg", "Oil for frying"],
+          steps: ["Stir chimichurri into the bechamel with the veal, chill.", "Shape into logs.", "Coat in breadcrumbs.", "Fry until deep golden."] },
+        { name: "Asado Pintxos", description: "Argentine asado-style grilled beef on Spanish pintxo bread skewers with aioli.",
+          serves: "Serves 4", time: "30 min",
+          ingredients: ["1 lb sirloin, thinly sliced", "Baguette, cubed", "Garlic aioli", "Chimichurri", "Skewers"],
+          steps: ["Grill the beef over high heat, season well.", "Thread with bread cubes onto skewers.", "Serve with both aioli and chimichurri on the side."] },
+        { name: "Dulce de Leche Churros", description: "The ultimate meeting point — Spanish churros with Argentine dulce de leche for dipping instead of chocolate.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["Churro dough", "Oil for frying", "1 cup dulce de leche, warmed", "Cinnamon sugar"],
+          steps: ["Pipe and fry the churros until golden.", "Roll in cinnamon sugar.", "Warm the dulce de leche until pourable.", "Serve together immediately."] },
+      ],
+      drink: { name: "Mate Sangria", description: "Argentine yerba mate — the drink of the people — stirred into Spanish sangria, two cultures in one glass.",
+        serves: "Serves 4", time: "10 min",
+        ingredients: ["2 cups brewed yerba mate, cooled", "1 cup red grape juice", "Orange slices", "Soda", "Ice"],
+        steps: ["Mix cooled mate with grape juice.", "Add orange slices, chill.", "Top with soda over ice."] },
+    },
+    common: {
+      intro: "Spain and Argentina are the same culinary family separated by an ocean — Spanish settlers brought their food, Argentina made it entirely its own, and now both nations send each other things to argue about and love in equal measure.",
+      connections: [
+        { title: "The same roots", description: "Argentine cuisine is built on Spanish foundations — empanadas, chorizo, wine, and olive oil all crossed the Atlantic with Spanish settlers and never looked back." },
+        { title: "Cured meat as obsession", description: "Spanish jamon and Argentine asado are both cultural religions, where the quality of the meat and the time spent on it is a matter of pride and identity." },
+        { title: "Churros and dulce de leche", description: "Churros came from Spain. Dulce de leche was perfected in Argentina. Together they are better than either alone — which is the whole story of this matchup." },
+      ],
+    },
+  },
+  "France|England": {
+    menu: {
+      bites: [
+        { name: "Scotch Egg Croque", description: "A croque monsieur built around a sliced English scotch egg — French technique, British heart.",
+          serves: "Serves 4", time: "40 min",
+          ingredients: ["2 scotch eggs, halved", "8 bread slices", "Gruyere", "Bechamel", "Butter"],
+          steps: ["Lay scotch egg halves inside bread with gruyere.", "Top with bechamel.", "Butter outside, grill until golden.", "Serve hot."] },
+        { name: "Fish and Chips Tartines", description: "French open tartines topped with British beer-battered fish and a French cornichon tartare.",
+          serves: "Serves 4", time: "35 min",
+          ingredients: ["4 bread slices", "1 lb beer-battered white fish, fried", "Cornichons, chopped", "Mayo", "Dill", "Lemon"],
+          steps: ["Toast the bread.", "Fry the beer-battered fish.", "Make a quick tartare with mayo, cornichons, dill.", "Top toast with fish and tartare."] },
+        { name: "Trifle Madeleines", description: "French madeleines soaked trifle-style in custard, cream, and a layer of jam.",
+          serves: "Serves 6", time: "30 min",
+          ingredients: ["12 madeleines", "1 cup custard", "Strawberry jam", "Whipped cream", "Powdered sugar"],
+          steps: ["Dip each madeleine briefly in the custard.", "Layer in a dish with jam and cream.", "Finish with a dusting of powdered sugar.", "Chill 20 min before serving."] },
+      ],
+      drink: { name: "Elderflower Kir", description: "English elderflower cordial in a French kir — the Channel crossing in a glass.",
+        serves: "Serves 4", time: "5 min",
+        ingredients: ["Elderflower cordial", "Soda water", "A splash of blackcurrant syrup", "Ice", "Lemon"],
+        steps: ["Pour elderflower and blackcurrant syrup over ice.", "Top with soda.", "Finish with lemon."] },
+    },
+    common: {
+      intro: "France and England have been at each other's tables — and each other's throats — for a thousand years. Norman French gave English its vocabulary for fine food, and the Channel has never stopped the traffic in butter, wine, and argument.",
+      connections: [
+        { title: "A thousand years of influence", description: "Norman French settlers in 1066 brought French culinary vocabulary to England — beef, pork, cuisine itself — and the two food cultures have been borrowing from each other ever since." },
+        { title: "Fish from the same sea", description: "French sole meunière and English fish and chips both celebrate the Channel's catch, treated with very different philosophies but equal devotion." },
+        { title: "Pastry and custard", description: "French crème patissière and English custard are essentially the same idea — rich, eggy, warming — each culture insisting theirs is superior." },
+      ],
+    },
+  },
+
 };
 
 function getPairingContent(teamA, teamB) {
